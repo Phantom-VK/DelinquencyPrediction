@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import StandardScaler
 
 
 
@@ -16,6 +17,13 @@ def tune_hyperparameters(data_path):
     y = df['Delinquent_Account']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=0.2)
+
+    print("Applying Standard Scaler")
+    scaler = StandardScaler()
+    scaler.fit(X_train)
+    X_train_scaled = scaler.transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
 
     model = DecisionTreeClassifier(random_state=42)
 
@@ -36,8 +44,9 @@ def tune_hyperparameters(data_path):
         n_jobs=-1,
         verbose=2
     )
+    print("Tuning hyperparameters")
 
-    grid_search.fit(X_train, y_train)
+    grid_search.fit(X_train_scaled, y_train)
     print("Best score: {:.3f}".format(grid_search.best_score_))
     print("Best params: {}".format(grid_search.best_params_))
-    return grid_search.best_estimator_, X_test, y_test
+    return grid_search.best_estimator_, X_test_scaled, y_test
