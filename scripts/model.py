@@ -11,7 +11,7 @@ def create_model():
     return model
 
 def save_model(model):
-    filename = "model.pkl"
+    filename = "outputs/model.pkl"
     with open(filename, "wb") as file:
         pickle.dump(model, file)
     print(f"Model saved to {filename}")
